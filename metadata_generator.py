@@ -24,8 +24,6 @@ for question in questions:
             "passing_test": "",
             "count_neg": "1",
             "count_pos": "0",
-            "binary_path": "",
-            "crash_input": "",
             "exploit_file_list": [{inputs}],
             "test_timeout": 5,
             "bug_type": ""
