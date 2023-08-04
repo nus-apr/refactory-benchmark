@@ -3,6 +3,7 @@ from os.path import isfile,join,isdir
 import subprocess
 import pytest
 import shutil
+import json
 from pytest_jsonreport.plugin import JSONReport
 
 questions = [x for x in os.listdir() if not isfile(x) and "question" in x]
@@ -48,21 +49,20 @@ for question in questions:
         )
 
         os.chdir(join(question,bug_id))
-        os.system("touch init.py")
-        shutil.rmtree('__pycache__',ignore_errors=True)
-        shutil.rmtree('.pytest_cache',ignore_errors=True)
-        plugin = JSONReport()
-        pytest.main(['--json-report-file=none'], plugins=[plugin])
-        passing_test_count = plugin.report["summary"]["passed"]
-        failing_test_count = plugin.report["summary"]["failed"]
+        os.system("pytest --json-report --timeout=5")
+        with open(".report.json") as f:
+            report = json.loads(f.read())
+
+        passing_test_count = report["summary"].get("passed",0)
+        failing_test_count = report["summary"].get("failed",0)
         passing_tests = []
         failing_tests = []
-        for test in plugin.report["tests"]:
+        for test in report["tests"]:
             if test["outcome"] == "passed":
                 passing_tests.append(test["nodeid"])
             else:
                 failing_tests.append(test["nodeid"])
-        #os.remove("init.py")
+        os.remove(".report.json")
         os.chdir(cwd)
 
         data = """
