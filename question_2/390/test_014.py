@@ -14,5 +14,7 @@ tuple_of_possible_birthdays = (('May', '15'),
 
 from wrong_2_390 import *
 
+import pytest
+@pytest.mark.timeout(5)
 def test_014():
     assert unique_month("May", tuple_of_possible_birthdays) == False

@@ -5,7 +5,8 @@ questions = [x for x in os.listdir() if not isfile(x) and "question" in x]
 
 test_pattern = """{global_import}
 {solution_import}
-
+import pytest
+@pytest.mark.timeout(5)
 def test_{num}():
     assert {action} == {result}
 """

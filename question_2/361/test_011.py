@@ -14,5 +14,7 @@ tuple_of_possible_birthdays = (('May', '15'),
 
 from wrong_2_361 import *
 
+import pytest
+@pytest.mark.timeout(5)
 def test_011():
     assert unique_day("17", tuple_of_possible_birthdays) == False
