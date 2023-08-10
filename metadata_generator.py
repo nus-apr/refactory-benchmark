@@ -47,6 +47,11 @@ for question in questions:
                 for x in os.listdir(os.path.join("base", question,"ans"))
                 if "input" in x]
         )
+        correct_solutions = ",".join(
+                [f'"{question}/ans/{x}"'
+                for x in os.listdir(os.path.join("base", question,"correct"))
+                if "input" in x]
+        )
 
         os.chdir(join(question,bug_id))
         os.system("pytest --json-report --timeout=5")
@@ -72,6 +77,7 @@ for question in questions:
             "bug_id":"{problem_id}",
             "source_file": "wrong_{question_id}_{bug_id}.py",
             "reference_file": "{correct_file}",
+            "correct_files": "[{correct_solutions}]",
             "extra_files": [{extra_files}],
             "line_numbers": [],
             "failing_test": [{passing_tests}],
@@ -93,6 +99,7 @@ for question in questions:
             problem_id=name,
             question_id=question.split('_')[1],
             bug_id=bug_id,
+            correct_solutions=correct_solutions,
             extra_files = "'global.py'" if isfile(join(question,bug_id,'global.py')) else '',
             correct_file="reference.py",
             inputs=inputs,
