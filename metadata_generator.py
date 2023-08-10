@@ -100,7 +100,7 @@ for question in questions:
             question_id=question.split('_')[1],
             bug_id=bug_id,
             correct_solutions=correct_solutions,
-            extra_files = "'global.py'" if isfile(join(question,bug_id,'global.py')) else '',
+            extra_files = '"global.py"' if isfile(join(question,bug_id,'global.py')) else '',
             correct_file="reference.py",
             inputs=inputs,
             passing_tests = ','.join(map ( lambda f : '"{}"'.format(f), passing_tests)),
