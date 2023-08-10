@@ -50,7 +50,7 @@ for question in questions:
         correct_solutions = ",".join(
                 [f'"{question}/ans/{x}"'
                 for x in os.listdir(os.path.join("base", question,"correct"))
-                if "input" in x]
+                ]
         )
 
         os.chdir(join(question,bug_id))
@@ -77,7 +77,7 @@ for question in questions:
             "bug_id":"{problem_id}",
             "source_file": "wrong_{question_id}_{bug_id}.py",
             "reference_file": "{correct_file}",
-            "correct_files": "[{correct_solutions}]",
+            "correct_files": [{correct_solutions}],
             "extra_files": [{extra_files}],
             "line_numbers": [],
             "failing_test": [{passing_tests}],
