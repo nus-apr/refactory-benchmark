@@ -1,5 +1,5 @@
 import os
-from os.path import isfile,join,isdir
+from os.path import isfile, join, isdir
 import subprocess
 import pytest
 import shutil
@@ -31,35 +31,37 @@ def execute_command(command: str, show_output=True, env=dict(), directory=None):
     # out is the output of the command, and err is the exit value
     return int(process.returncode)
 
+
 file = open("meta-data.candidate.json", "w")
 file.write("[")
 id = 0
 cwd = os.getcwd()
 for question in questions:
     os.chdir(cwd)
-    for bug_id in [
-        x for x in os.listdir(question) if isdir(join(question,x))
-    ]:
+    for bug_id in [x for x in os.listdir(question) if isdir(join(question, x))]:
         id = id + 1
         name = bug_id
         inputs = ",".join(
-                [f'"{question}/ans/{x}"'
-                for x in os.listdir(os.path.join("base", question,"ans"))
-                if "input" in x]
+            [
+                f'"{question}/ans/{x}"'
+                for x in os.listdir(os.path.join("base", question, "ans"))
+                if "input" in x
+            ]
         )
         correct_solutions = ",".join(
-                [f'"{question}/ans/{x}"'
-                for x in os.listdir(os.path.join("base", question,"correct"))
-                ]
+            [
+                f'"{question}/ans/{x}"'
+                for x in os.listdir(os.path.join("base", question, "correct"))
+            ]
         )
 
-        os.chdir(join(question,bug_id))
+        os.chdir(join(question, bug_id))
         os.system("pytest --json-report --timeout=5")
         with open(".report.json") as f:
             report = json.loads(f.read())
 
-        passing_test_count = report["summary"].get("passed",0)
-        failing_test_count = report["summary"].get("failed",0)
+        passing_test_count = report["summary"].get("passed", 0)
+        failing_test_count = report["summary"].get("failed", 0)
         passing_tests = []
         failing_tests = []
         for test in report["tests"]:
@@ -97,16 +99,18 @@ for question in questions:
             id=id,
             lab=question,
             problem_id=name,
-            question_id=question.split('_')[1],
+            question_id=question.split("_")[1],
             bug_id=bug_id,
             correct_solutions=correct_solutions,
-            extra_files = '"global.py"' if isfile(join(question,bug_id,'global.py')) else '',
+            extra_files='"global.py"'
+            if isfile(join(question, bug_id, "global.py"))
+            else "",
             correct_file="reference.py",
             inputs=inputs,
-            passing_tests = ','.join(map ( lambda f : '"{}"'.format(f), passing_tests)),
-            failing_tests = ','.join(map ( lambda f : '"{}"'.format(f),failing_tests)),
-            passing_test_count = passing_test_count,
-            failing_test_count = failing_test_count
+            passing_tests=",".join(map(lambda f: '"{}"'.format(f), passing_tests)),
+            failing_tests=",".join(map(lambda f: '"{}"'.format(f), failing_tests)),
+            passing_test_count=passing_test_count,
+            failing_test_count=failing_test_count,
         )
         file.write(data)
 
