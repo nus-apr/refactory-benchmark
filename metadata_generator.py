@@ -60,15 +60,15 @@ for question in questions:
         with open(".report.json") as f:
             report = json.loads(f.read())
 
-        passing_test_count = report["summary"].get("passed", 0)
-        failing_test_count = report["summary"].get("failed", 0)
-        passing_tests = []
-        failing_tests = []
+        passing_test_identifiers_count = report["summary"].get("passed", 0)
+        failing_test_identifiers_count = report["summary"].get("failed", 0)
+        passing_test_identifiers = []
+        failing_test_identifiers = []
         for test in report["tests"]:
             if test["outcome"] == "passed":
-                passing_tests.append(test["nodeid"])
+                passing_test_identifiers.append(test["nodeid"])
             else:
-                failing_tests.append(test["nodeid"])
+                failing_test_identifiers.append(test["nodeid"])
         os.remove(".report.json")
         os.chdir(cwd)
 
@@ -82,10 +82,10 @@ for question in questions:
             "correct_files": [{correct_solutions}],
             "extra_files": [{extra_files}],
             "line_numbers": [],
-            "failing_test": [{passing_tests}],
-            "passing_test": [{failing_tests}],
-            "count_neg": "{passing_test_count}",
-            "count_pos": "{failing_test_count}",
+            "failing_test_identifiers": [{passing_test_identifiers}],
+            "passing_test_identifiers": [{failing_test_identifiers}],
+            "count_neg": "{passing_test_identifiers_count}",
+            "count_pos": "{failing_test_identifiers_count}",
             "exploit_file_list": [{inputs}],
             "test_timeout": 5,
             "bug_type": "",
@@ -107,10 +107,10 @@ for question in questions:
             else "",
             correct_file="reference.py",
             inputs=inputs,
-            passing_tests=",".join(map(lambda f: '"{}"'.format(f), passing_tests)),
-            failing_tests=",".join(map(lambda f: '"{}"'.format(f), failing_tests)),
-            passing_test_count=passing_test_count,
-            failing_test_count=failing_test_count,
+            passing_test_identifiers=",".join(map(lambda f: '"{}"'.format(f), passing_test_identifiers)),
+            failing_test_identifiers=",".join(map(lambda f: '"{}"'.format(f), failing_test_identifiers)),
+            passing_test_identifiers_count=passing_test_identifiers_count,
+            failing_test_identifiers_count=failing_test_identifiers_count,
         )
         file.write(data)
 
